@@ -46,16 +46,10 @@ export default function LandingPage() {
     router.push(`/payment?plan=${plan}&price=${price}`)
   }
 
-  const scrollToSection = (id) => {
-    const element = document.getElementById(id)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' })
-    }
-  }
+
 
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100">
-      <Header scrollToSection={scrollToSection} />
       <main className="flex-1 pt-20">
         {/* Hero Section */}
         <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-gradient-to-r from-blue-50 to-blue-100 dark:from-gray-800 dark:to-gray-900">
@@ -173,7 +167,7 @@ export default function LandingPage() {
                 <img
                   alt="How It Works"
                   className="w-full h-full object-cover object-center"
-                  src="/placeholder.svg"
+                  src="/Screenshot 2024-09-09 at 2.22.02 PM.png"
                   loading="lazy"
                 />
               </div>
