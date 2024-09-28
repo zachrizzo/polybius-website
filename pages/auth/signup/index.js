@@ -6,12 +6,12 @@ import { useRouter } from 'next/router';
 import { auth, db } from '../../../firebase/firebase';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { Label } from '@/components/ui/Label';
-import { Select } from '@/components/ui/Select';
-import { Card } from '@/components/ui/Card';
-import { Alert } from '@/components/ui/Alert';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select } from '@/components/ui/select';
+import { Card } from '@/components/ui/card';
+import { Alert } from '@/components/ui/alert';
 import {
     EyeIcon,
     EyeOffIcon,
