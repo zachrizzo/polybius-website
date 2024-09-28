@@ -133,7 +133,7 @@ export function SignupFlow() {
   }
 
   const handleRouteLogin = () => {
-    router.push('/login')
+    router.push('/auth/login')
   }
 
   const fillTestData = () => {

@@ -14,7 +14,7 @@ export default function App({ Component, pageProps }) {
   }
 
   const onLoginClick = () => {
-    router.push('/login')
+    router.push('/auth/login')
   }
 
   return (
