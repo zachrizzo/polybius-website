@@ -6,7 +6,14 @@ export default function App({ Component, pageProps }) {
   const router = useRouter()
 
   const scrollToSection = async (id) => {
-    await router.push('/')
+    // Get the current URL
+    const url = window.location.href
+
+    // Check if the current URL is not already the home page
+    if (!url.endsWith('/')) {
+      await router.push('/')
+    }
+
     const element = document.getElementById(id)
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' })
