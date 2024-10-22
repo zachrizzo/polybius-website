@@ -14,9 +14,12 @@ import 'reactflow/dist/style.css'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
-import { ArrowRight, Code, Zap, Lightbulb } from 'lucide-react'
+import { ArrowRight, Code, Zap, Lightbulb, Download } from 'lucide-react'
 import { useRouter } from 'next/router'
 import Header from '@/components/layout/Header'
+import { db } from '@/firebase/firebase'
+import { addDoc, collection } from 'firebase/firestore'
+
 
 const initialNodes = [
   { id: '1', position: { x: 0, y: 0 }, data: { label: 'App.js' }, type: 'input' },
@@ -38,15 +41,41 @@ const initialEdges = [
 export default function LandingPage() {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes)
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges)
+  const [email, setEmail] = useState('')
   const router = useRouter()
 
   const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), [setEdges])
 
   const handleGetStarted = (plan, price) => {
-    router.push(`/payment?plan=${plan}&price=${price}`)
+    router.push(`https://buy.stripe.com/test_5kAaF29La9qv6Q08ww`)
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    if (email) {
+      try {
+        await addDoc(collection(db, "emails"), { email })
+        alert('Email submitted successfully!')
+        setEmail('')
+      } catch (error) {
+        console.error('Error adding email: ', error)
+        alert('There was an error submitting your email. Please try again.')
+      }
+    } else {
+      alert('Please enter a valid email address.')
+    }
   }
 
 
+  const handleDownload = () => {
+    // Create a link element
+    const link = document.createElement('a')
+    link.href = '/apps/mac/Fractal X-darwin-arm64-1.0.0.zip'
+    link.download = 'Fractal X-darwin-arm64-1.0.0.zip'
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-100">
@@ -61,19 +90,30 @@ export default function LandingPage() {
                     Understand Your Codebase in a Snap
                   </h1>
                   <p className="max-w-lg text-lg text-gray-600 dark:text-gray-300">
-                    Fractal X helps remove tech debt and messy code by allowing independent developers and teams of any size to visualize their entire code base.
+                    Fractal X helps remove tech debt and messy code by allowing independent developers and teams of any size to visualize their entire code base.
 
-                    Through intuitive Code Maps powered by AI we can remove any of the guess work for you. We want you to spend more time shipping and less time debugging.
+                    Through intuitive Code Maps powered by AI, we can remove any of the guesswork for you. We want you to spend more time shipping and less time debugging.
 
                     Always be shipping.
                   </p>
                 </div>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button
+                    onClick={handleDownload}
+                    className="flex items-center justify-center bg-blue-600 hover:bg-blue-700"
+                  >
+                    <Download className="mr-2 h-4 w-4" />
+                    Download for Mac
+                  </Button>
+                </div>
                 <div className="w-full max-w-md space-y-4">
-                  <form className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
+                  <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2">
                     <Input
                       className="flex-1"
                       placeholder="Enter your email"
                       type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                     />
                     <Button type="submit" className="flex items-center justify-center">
                       Get Started <ArrowRight className="ml-2 h-4 w-4" />
@@ -131,6 +171,7 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
+
 
         {/* How It Works Section */}
         <section id="how-it-works" className="w-full py-12 md:py-24 lg:py-32">
