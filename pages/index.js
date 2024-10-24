@@ -17,9 +17,9 @@ import Link from "next/link"
 import { ArrowRight, Code, Zap, Lightbulb, Download } from 'lucide-react'
 import { useRouter } from 'next/router'
 import Header from '@/components/layout/Header'
-import { db } from '@/firebase/firebase'
+import { db, storage } from '@/firebase/firebase' // Ensure storage is exported from your Firebase config
 import { addDoc, collection } from 'firebase/firestore'
-
+import { ref, getDownloadURL } from 'firebase/storage'
 
 const initialNodes = [
   { id: '1', position: { x: 0, y: 0 }, data: { label: 'App.js' }, type: 'input' },
@@ -66,15 +66,45 @@ export default function LandingPage() {
     }
   }
 
+  const handleDownload = async () => {
+    try {
+      // Create the correct storage reference
+      const fileRef = ref(storage, 'gs://auto-code-documentation.appspot.com/app/mac/Fractal X-darwin-arm64-1.0.0.zip')
 
-  const handleDownload = () => {
-    // Create a link element
-    const link = document.createElement('a')
-    link.href = '/apps/mac/Fractal X-darwin-arm64-1.0.0.zip'
-    link.download = 'Fractal X-darwin-arm64-1.0.0.zip'
-    document.body.appendChild(link)
-    link.click()
-    document.body.removeChild(link)
+      try {
+        // Get the download URL
+        const url = await getDownloadURL(fileRef)
+
+        // Create a temporary link element
+        const link = document.createElement('a')
+        link.href = url
+        link.setAttribute('download', 'Fractal X-darwin-arm64-1.0.0.zip')
+
+        // Required for Firefox
+        document.body.appendChild(link)
+
+        // Trigger download
+        link.click()
+
+        // Cleanup
+        document.body.removeChild(link)
+
+      } catch (downloadError) {
+        console.error('Download URL Error:', downloadError)
+
+        // More specific error messages based on error code
+        if (downloadError.code === 'storage/object-not-found') {
+          alert('File not found. Please contact support.')
+        } else if (downloadError.code === 'storage/unauthorized') {
+          alert('You do not have permission to download this file.')
+        } else {
+          alert('Failed to download. Please try again later.')
+        }
+      }
+    } catch (error) {
+      console.error('General Error:', error)
+      alert('An unexpected error occurred. Please try again later.')
+    }
   }
 
   return (
@@ -171,7 +201,6 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
-
 
         {/* How It Works Section */}
         <section id="how-it-works" className="w-full py-12 md:py-24 lg:py-32">
